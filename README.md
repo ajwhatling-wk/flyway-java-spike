@@ -4,7 +4,7 @@ Demonstrates using Java to drive migrations in [Flyway](https://flywaydb.org/).
 
 ### How to run this project
 
-Simply run `mvn clean compile package flyway:migrate`.  A `target` directory will appear with an extensionless sqlite db file called `foobar`.  It can be accessed with sqlite if you have it installed: `sqlite ./target/foobar`.
+Simply run `mkdir target` (required before Maven runs, Sqlite needs it to be there) followed by `mvn clean compile package flyway:migrate`.  The `target` directory will appear with an extensionless sqlite db file called `foobar`.  It can be accessed with sqlite if you have it installed: `sqlite ./target/foobar`.
 
 If an error occurs, make sure you are using Java 8.  You can also run run the command in error mode, to show stack traces and so forth: `mvn -e clean compile package flyway:migrate`
 
