@@ -5,6 +5,7 @@ import org.apache.commons.io.IOUtils;
 import org.flywaydb.core.api.migration.jdbc.JdbcMigration;
 
 import java.io.InputStream;
+import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -15,7 +16,7 @@ import java.util.Map;
 
 public class V1_2_1__MigrateJsonSkuidToColumn implements JdbcMigration {
     private static final String SQL_SELECT_PRODUCTS = "SELECT pid, properties FROM product;";
-    private static final String SQL_UPDATE_PRODUCT = "UPDATE product SET skuid=? WHERE pid=?;";
+    private static final String SQL_UPDATE_PRODUCT = "UPDATE product SET skuid=?, properties=? WHERE pid=?;";
 
     public void migrate(Connection connection) throws Exception {
         List<PreparedStatement> skuidUpdates = new LinkedList<>();
@@ -40,10 +41,14 @@ public class V1_2_1__MigrateJsonSkuidToColumn implements JdbcMigration {
                 // If the following line is underlined with red in Intellij,
                 // see this SO answer: http://stackoverflow.com/a/37787156
                 String skuid = propertiesMap.getOrDefault("sku_id", "").toString();
+                propertiesMap.remove("sku_id");
+
+                String updatedJson = JSON.std.asString(propertiesMap);
 
                 PreparedStatement moveSkuid = connection.prepareStatement(SQL_UPDATE_PRODUCT);
                 moveSkuid.setString(1, skuid);
-                moveSkuid.setInt(2, pid);
+                moveSkuid.setString(2, updatedJson);
+                moveSkuid.setInt(3, pid);
 
                 skuidUpdates.add(moveSkuid);
             }
