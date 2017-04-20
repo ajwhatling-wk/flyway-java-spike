@@ -5,7 +5,6 @@ import org.apache.commons.io.IOUtils;
 import org.flywaydb.core.api.migration.jdbc.JdbcMigration;
 
 import java.io.InputStream;
-import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
