@@ -6,13 +6,11 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 
 public class V1_1_0__AddPropertiesToProductTable implements JdbcMigration {
-    public void migrate(Connection connection) throws Exception {
-        PreparedStatement stmt = connection.prepareStatement("ALTER TABLE product ADD COLUMN properties BLOB");
+    private static final String SQL_ALTER_TABLE = "ALTER TABLE product ADD COLUMN properties BLOB";
 
-        try {
+    public void migrate(Connection connection) throws Exception {
+        try (PreparedStatement stmt = connection.prepareStatement(SQL_ALTER_TABLE)) {
             stmt.execute();
-        } finally {
-            stmt.close();
         }
     }
 }

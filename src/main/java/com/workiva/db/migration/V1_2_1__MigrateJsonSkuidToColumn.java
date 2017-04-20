@@ -14,10 +14,13 @@ import java.util.List;
 import java.util.Map;
 
 public class V1_2_1__MigrateJsonSkuidToColumn implements JdbcMigration {
-    public void migrate(Connection connection) throws Exception {
-        List<PreparedStatement> skuidUpdates = new LinkedList<PreparedStatement>();
+    private static final String SQL_SELECT_PRODUCTS = "SELECT pid, properties FROM product;";
+    private static final String SQL_UPDATE_PRODUCT = "UPDATE product SET skuid=? WHERE pid=?;";
 
-        try (PreparedStatement selectProperties = connection.prepareStatement("SELECT pid, properties FROM product;")) {
+    public void migrate(Connection connection) throws Exception {
+        List<PreparedStatement> skuidUpdates = new LinkedList<>();
+
+        try (PreparedStatement selectProperties = connection.prepareStatement(SQL_SELECT_PRODUCTS)) {
             ResultSet resultSet = selectProperties.executeQuery();
 
             while (resultSet.next()) {
@@ -38,7 +41,7 @@ public class V1_2_1__MigrateJsonSkuidToColumn implements JdbcMigration {
                 // see this SO answer: http://stackoverflow.com/a/37787156
                 String skuid = propertiesMap.getOrDefault("sku_id", "").toString();
 
-                PreparedStatement moveSkuid = connection.prepareStatement("UPDATE product SET skuid=? WHERE pid=?;");
+                PreparedStatement moveSkuid = connection.prepareStatement(SQL_UPDATE_PRODUCT);
                 moveSkuid.setString(1, skuid);
                 moveSkuid.setInt(2, pid);
 

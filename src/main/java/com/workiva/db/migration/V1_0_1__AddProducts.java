@@ -6,16 +6,14 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 
 public class V1_0_1__AddProducts implements JdbcMigration {
-    public void migrate(Connection connection) throws Exception {
-        PreparedStatement stmt = connection.prepareStatement("INSERT INTO product(name) VALUES " +
-                "('Doge Coin Collectable')," +
-                "('Tears of the Raging Call of Duty Players')," +
-                "('Replica Chuck Norris Beard');");
+    private static final String SQL_INSERT_NONSENSE_PRODUCTS = "INSERT INTO product(name) VALUES " +
+            "('Doge Coin Collectable')," +
+            "('Tears of the Raging Call of Duty Players')," +
+            "('Replica Chuck Norris Beard');";
 
-        try {
+    public void migrate(Connection connection) throws Exception {
+        try (PreparedStatement stmt = connection.prepareStatement(SQL_INSERT_NONSENSE_PRODUCTS)) {
             stmt.execute();
-        } finally {
-            stmt.close();
         }
     }
 }
